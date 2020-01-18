@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Paddle } from '../Paddle';
+import { Ball } from '../Ball';
 
 const PADDLE_HEIGHT = 175;
 const PADDLE_WIDTH = 20;
+
+const BALL_DIAMETER = 20;
 
 const BOARD_WIDTH = 1280;
 const BOARD_HEIGHT = 720;
@@ -30,11 +33,11 @@ export class GameField extends React.Component {
                 y: startingY,
             },
             ball: {
-                x: 0,
-                y: 0,
+                x: (BOARD_WIDTH / 2) - (BALL_DIAMETER / 2),
+                y: (BOARD_HEIGHT / 2) - (BALL_DIAMETER / 2),
                 velocity: {
-                    x: 0,
-                    y: 0,
+                    x: ((Math.random() - 0.5) * 0.25) + 0.45,
+                    y: ((Math.random() - 0.5) * 0.25),
                 }
             },
             input: {
@@ -66,6 +69,7 @@ export class GameField extends React.Component {
 
         if (elapsed > TICK_DURATION) {
             this._applyInputsToPaddles(elapsed);
+            this._applyVelocityToBall(elapsed);
         }
 
         requestAnimationFrame(this.tick);
@@ -73,6 +77,8 @@ export class GameField extends React.Component {
 
     _applyInputsToPaddles = (elapsed) => {
         const { input: { arrowUp, arrowDown } } = this.state;
+
+        elapsed = Math.min(elapsed, 100);
 
         if (arrowUp || arrowDown) {
             let velocity = 0;
@@ -94,6 +100,59 @@ export class GameField extends React.Component {
                 });
             }
         }
+    }
+
+    _applyVelocityToBall = (elapsed) => {
+        elapsed = Math.min(elapsed, 100);
+
+        this.setState((state) => {
+            let { ball } = state;
+
+            let nextX = -1;
+            let nextY = -1;
+
+            const calcNextXY = () => {
+                nextX = ball.x + (ball.velocity.x * elapsed);
+                nextY = ball.y + (ball.velocity.y * elapsed);
+            };
+
+            calcNextXY();
+
+            if (!this._withinBounds('x', nextX, BALL_DIAMETER)) {
+                ball.velocity.x = -ball.velocity.x;
+
+                calcNextXY();
+            }
+
+            if (!this._withinBounds('y', nextY, BALL_DIAMETER)) {
+                ball.velocity.y = -ball.velocity.y;
+
+                calcNextXY();
+            }
+
+            ball.x = nextX;
+            ball.y = nextY;
+
+            return {
+                ball,
+            };
+        });
+    }
+
+    _withinBounds(xOrY, pos, gurth) {
+        let outerBound = null;
+
+        if (xOrY === 'x') {
+            outerBound = BOARD_WIDTH;
+        }
+        else if (xOrY === 'y') {
+            outerBound = BOARD_HEIGHT;
+        }
+        else {
+            throw new Error();
+        }
+
+        return pos > 0 && pos <= (outerBound - gurth);
     }
 
     _handleKeyDown = (event) => {
@@ -161,7 +220,7 @@ export class GameField extends React.Component {
     }
 
     render() {
-        const { p1, p2 } = this.state;
+        const { p1, p2, ball } = this.state;
 
         return (
             <GameFieldView>
@@ -176,6 +235,12 @@ export class GameField extends React.Component {
                     width={PADDLE_WIDTH}
                     x={1080}
                     y={p2.y}
+                />
+                <Ball
+                    height={BALL_DIAMETER}
+                    width={BALL_DIAMETER}
+                    x={ball.x}
+                    y={ball.y}
                 />
             </GameFieldView>
         );

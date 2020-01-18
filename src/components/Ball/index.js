@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const PaddleView = styled.div.attrs(props => ({
+const BallView = styled.div.attrs(props => ({
     style: {
         width: `${props.width}px`,
         height: `${props.height}px`,
@@ -14,7 +14,7 @@ const PaddleView = styled.div.attrs(props => ({
     position: absolute;
 `;
 
-export class Paddle extends React.Component {
+export class Ball extends React.Component {
     static propTypes = {
         x: PropTypes.number.isRequired,
         y: PropTypes.number.isRequired,
@@ -24,7 +24,7 @@ export class Paddle extends React.Component {
 
     render() {
         return (
-            <PaddleView {...this.props} />
+            <BallView {...this.props} />
         );
     }
 }
