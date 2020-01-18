@@ -1,0 +1,52 @@
+{
+    "name": "multi-timers",
+    "main": "src/index.js",
+    "scripts": {
+        "pretest": "eslint ./code",
+        "build": "webpack --config webpack.release.js",
+        "start": "webpack-dev-server --config webpack.dev.js",
+        "watch": "webpack --watch --progress --config webpack.dev.js"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.7.4",
+        "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+        "@babel/preset-env": "^7.7.7",
+        "@babel/preset-react": "^7.7.4",
+        "babel-eslint": "^10.0.3",
+        "babel-loader": "^8.0.6",
+        "clean-webpack-plugin": "^1.0.0",
+        "eslint": "^6.8.0",
+        "eslint-loader": "^3.0.3",
+        "eslint-plugin-jasmine": "^4.1.0",
+        "eslint-plugin-lodash": "^6.0.0",
+        "eslint-plugin-react": "^7.17.0",
+        "exports-loader": "^0.7.0",
+        "file-loader": "^5.0.2",
+        "html-webpack-plugin": "^3.2.0",
+        "imports-loader": "^0.8.0",
+        "prettier": "1.19.1",
+        "terser-webpack-plugin": "^2.3.1",
+        "url-loader": "^3.0.0",
+        "webpack": "^4.41.4",
+        "webpack-cli": "^3.3.10",
+        "webpack-dev-server": "^3.10.1",
+        "webpack-merge": "^4.2.2",
+        "webpack-notifier": "^1.8.0"
+    },
+    "dependencies": {
+        "@babel/core": "^7.7.7",
+        "@babel/plugin-proposal-optional-chaining": "^7.7.5",
+        "@material-ui/core": "^4.8.1",
+        "@babel/polyfill": "^7.7.0",
+        "babel-plugin-styled-components": "^1.10.6",
+        "classnames": "^2.2.6",
+        "core-js": "~2",
+        "lodash": "^4.17.15",
+        "prop-types": "^15.7.2",
+        "react": "^16.12.0",
+        "react-compound-timer": "^1.1.15",
+        "react-dom": "^16.12.0",
+        "styled-components": "^4.4.1"
+    }
+}

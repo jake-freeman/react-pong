@@ -1,0 +1,82 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env", {
+                // define minimum versions of our target browsers
+                // last updated December, 2018
+                "targets": {
+                    "chrome": "71",
+                    "edge": "44",
+                    "firefox": "64",
+                    "ie": "11"
+                },
+                // useBuiltIns: 'usage' tells babel to
+                // only polyfill certain features based on
+                // usage so we don't need to include a huge
+                // library of polyfills we don't need
+                "useBuiltIns": "usage",
+                // When using useBuiltIns: 'usage', we need to specify the major
+                // version of the `core-js` package we want to use for the
+                // polyfills. This must match the major version of `core-js`
+                // in our package.json `dependencies`
+                "corejs": "2",
+            }
+        ],
+        "@babel/preset-react"
+    ],
+    "plugins": [
+        "@babel/plugin-proposal-object-rest-spread",
+        "@babel/plugin-proposal-optional-chaining",
+        "@babel/plugin-proposal-class-properties"
+    ],
+    "env": {
+        "test": {
+            "presets": [
+                [
+                    "@babel/preset-react", {
+                        "development": true
+                    }
+                ]
+            ],
+            "plugins": [
+                [
+                    "babel-plugin-styled-components", {
+                        // This option enhances the attached CSS class
+                        // name on each component with richer output
+                        // to help identify your components in the
+                        // DOM without React DevTools. It also allows
+                        // you to see the component's displayName
+                        // in React DevTools
+                        "displayName": true
+                    }
+                ]
+            ],
+        },
+        "development": {
+            "presets": [
+                [
+                    "@babel/preset-react", {
+                        "development": true
+                    }
+                ]
+            ],
+            "plugins": [
+                [
+                    "babel-plugin-styled-components", {
+                        // This option enhances the attached CSS class
+                        // name on each component with richer output
+                        // to help identify your components in the
+                        // DOM without React DevTools. It also allows
+                        // you to see the component's displayName
+                        // in React DevTools
+                        "displayName": true
+                    }
+                ]
+            ],
+        },
+        "production": {
+            "presets": [],
+            "plugins": [],
+        }
+    }
+}
