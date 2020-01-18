@@ -27,19 +27,14 @@ export class GameField extends React.Component {
 
         this.state = {
             p1: {
+                x: 200,
                 y: startingY,
             },
             p2: {
+                x: 1080,
                 y: startingY,
             },
-            ball: {
-                x: (BOARD_WIDTH / 2) - (BALL_DIAMETER / 2),
-                y: (BOARD_HEIGHT / 2) - (BALL_DIAMETER / 2),
-                velocity: {
-                    x: ((Math.random() - 0.5) * 0.25) + 0.45,
-                    y: ((Math.random() - 0.5) * 0.25),
-                }
-            },
+            ball: this._getInitBallState(),
             input: {
                 arrowUp: false,
                 arrowDown: false,
@@ -73,6 +68,17 @@ export class GameField extends React.Component {
         }
 
         requestAnimationFrame(this.tick);
+    }
+
+    _getInitBallState() {
+        return {
+            x: (BOARD_WIDTH / 2) - (BALL_DIAMETER / 2),
+            y: (BOARD_HEIGHT / 2) - (BALL_DIAMETER / 2),
+            velocity: {
+                x: ((Math.random() - 0.5) * 0.25) + 0.45,
+                y: ((Math.random() - 0.5) * 0.25),
+            }
+        };
     }
 
     _applyInputsToPaddles = (elapsed) => {
@@ -130,6 +136,10 @@ export class GameField extends React.Component {
                 calcNextXY();
             }
 
+            this._handlePaddleCollision(state);
+
+            calcNextXY();
+
             ball.x = nextX;
             ball.y = nextY;
 
@@ -153,6 +163,42 @@ export class GameField extends React.Component {
         }
 
         return pos > 0 && pos <= (outerBound - gurth);
+    }
+
+    _handlePaddleCollision(state) {
+        const { p1, p2, ball } = state;
+        const paddles = [p1, p2];
+
+        const isCollision = () => {
+            const ballBounds = {
+                left: ball.x,
+                right: ball.x + BALL_DIAMETER,
+                top: ball.y,
+                bottom: ball.y + BALL_DIAMETER,
+            };
+
+            return paddles.some((paddle) => {
+                const paddleBounds = {
+                    left: paddle.x,
+                    right: paddle.x + PADDLE_WIDTH,
+                    top: paddle.y,
+                    bottom: paddle.y + PADDLE_HEIGHT,
+                };
+
+                return !(
+                    ((ballBounds.right < paddleBounds.left) || (ballBounds.left > paddleBounds.right)) ||
+                    ((ballBounds.bottom < paddleBounds.top) || (ballBounds.top > paddleBounds.bottom))
+                );
+            });
+        };
+
+        if (isCollision()) {
+            ball.velocity.x = -ball.velocity.x;
+        }
+
+        while (isCollision()) {
+            ball.x += ball.velocity.x;
+        }
     }
 
     _handleKeyDown = (event) => {
@@ -227,13 +273,13 @@ export class GameField extends React.Component {
                 <Paddle
                     height={PADDLE_HEIGHT}
                     width={PADDLE_WIDTH}
-                    x={200}
+                    x={p1.x}
                     y={p1.y}
                 />
                 <Paddle
                     height={PADDLE_HEIGHT}
                     width={PADDLE_WIDTH}
-                    x={1080}
+                    x={p2.x}
                     y={p2.y}
                 />
                 <Ball
