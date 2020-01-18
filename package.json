@@ -4,7 +4,7 @@
     "scripts": {
         "pretest": "eslint ./code",
         "build": "webpack --config webpack.release.js",
-        "start": "webpack-dev-server --config webpack.dev.js",
+        "start": "webpack-dev-server --watch --progress --config webpack.dev.js",
         "watch": "webpack --watch --progress --config webpack.dev.js"
     },
     "license": "MIT",
