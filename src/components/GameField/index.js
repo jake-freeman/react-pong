@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Paddle } from '../Paddle';
 import { Ball } from '../Ball';
+import { Scoreboard } from '../Scoreboard';
 
 const PADDLE_HEIGHT = 175;
 const PADDLE_WIDTH = 20;
@@ -29,10 +30,12 @@ export class GameField extends React.Component {
             p1: {
                 x: 200,
                 y: startingY,
+                score: 0,
             },
             p2: {
                 x: 1080,
                 y: startingY,
+                score: 0,
             },
             ball: this._getInitBallState(),
             input: {
@@ -71,11 +74,13 @@ export class GameField extends React.Component {
     }
 
     _getInitBallState() {
+        const left = Math.random() >= 0.5;
+
         return {
             x: (BOARD_WIDTH / 2) - (BALL_DIAMETER / 2),
             y: (BOARD_HEIGHT / 2) - (BALL_DIAMETER / 2),
             velocity: {
-                x: ((Math.random() - 0.5) * 0.25) + 0.45,
+                x: ((Math.random() - 0.5) * 0.25) + (0.5 * (left ? 1 : -1)),
                 y: ((Math.random() - 0.5) * 0.25),
             }
         };
@@ -125,9 +130,22 @@ export class GameField extends React.Component {
             calcNextXY();
 
             if (!this._withinBounds('x', nextX, BALL_DIAMETER)) {
-                ball.velocity.x = -ball.velocity.x;
+                ball = this._getInitBallState();
 
-                calcNextXY();
+                let { p1, p2 } = state;
+
+                if (nextX < 0) {
+                    p2.score++;
+                }
+                else {
+                    p1.score++;
+                }
+
+                return {
+                    ball,
+                    p1,
+                    p2,
+                };
             }
 
             if (!this._withinBounds('y', nextY, BALL_DIAMETER)) {
@@ -270,6 +288,7 @@ export class GameField extends React.Component {
 
         return (
             <GameFieldView>
+                <Scoreboard p1={p1.score} p2={p2.score} />
                 <Paddle
                     height={PADDLE_HEIGHT}
                     width={PADDLE_WIDTH}
